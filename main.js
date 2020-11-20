@@ -1,5 +1,5 @@
 const canvas = document.querySelector('canvas');
-const [width, height] = [300, 300]
+const [width, height] = [500, 500]
 
 canvas.width = width;
 canvas.height = height;
@@ -10,12 +10,6 @@ let grid = Array(width).fill().map(
             () => Array(height).fill().map(
                 () => { return { a:1, b:0 } }
             ))
-
-for(let x = 130; x < 170; x++) {
-    for(let y = 130; y < 170; y++) {
-        grid[x][y].b = 1
-    }
-}
 
 const gridToU8Array = grid => {
 
@@ -39,7 +33,7 @@ const gridToU8Array = grid => {
 const iterate = grid => {
 
     let next = [];
-    let [dA, dB, feed, kill] = [1, .5, .055, 0.062] // difussion rates, feed, kill
+    let [dA, dB, feed, kill] = [1, .5, .025, 0.062] // difussion rates, feed, kill
 
     for( let x = 0; x < width;  x++ ) {
         next[x] = [];
@@ -82,13 +76,36 @@ const iterate = grid => {
     return next
 }
 
-const nextFrame = grid => {
-    let next = iterate(grid);
-    let image = new ImageData( gridToU8Array(next), width, height )
+let running = true;
+const nextFrame = () => {
+    grid = iterate(grid);
+    let image = new ImageData( gridToU8Array(grid), width, height )
     ctx.putImageData( image, 0, 0 );
-    grid = next;
     // requestAnimationFrame( nextFrame(next) );
-    setTimeout( () => nextFrame(next), 10 );
+    if(running) setTimeout( () => nextFrame(grid), 10 );
 }
 
-nextFrame(grid);
+nextFrame();
+
+canvas.addEventListener('mousedown', e => {
+    running = false;
+    window.addEventListener('mouseup', e => {
+        running = true;
+        nextFrame();
+    })
+});
+
+canvas.addEventListener('mousemove', e => {
+    if(running) return;
+    let [ox,oy] = [e.offsetX, e.offsetY]
+
+    for(let x = ox-5; x < ox+5; x++) {
+        for(let y = oy-5; y < oy+5; y++) {
+            try{
+                grid[x][y].b = 1
+            } catch(e){} //borders
+        }
+    }
+    let image = new ImageData( gridToU8Array(grid), width, height )
+    ctx.putImageData( image, 0, 0 );
+})
