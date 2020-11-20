@@ -33,7 +33,6 @@ const gridToU8Array = grid => {
 const iterate = grid => {
 
     let next = [];
-    let [dA, dB, feed, kill] = [1, .5, .025, 0.062] // difussion rates, feed, kill
 
     for( let x = 0; x < width;  x++ ) {
         next[x] = [];
@@ -85,18 +84,18 @@ const nextFrame = () => {
     if(running) setTimeout( () => nextFrame(grid), 10 );
 }
 
-nextFrame();
+
+let drawing = false;
 
 canvas.addEventListener('mousedown', e => {
-    running = false;
+    drawing = true;
     window.addEventListener('mouseup', e => {
-        running = true;
-        nextFrame();
+        drawing = false;
     })
 });
 
 canvas.addEventListener('mousemove', e => {
-    if(running) return;
+    if(!drawing) return;
     let [ox,oy] = [e.offsetX, e.offsetY]
 
     for(let x = ox-5; x < ox+5; x++) {
@@ -109,3 +108,20 @@ canvas.addEventListener('mousemove', e => {
     let image = new ImageData( gridToU8Array(grid), width, height )
     ctx.putImageData( image, 0, 0 );
 })
+
+let [dA, dB, feed, kill] = [1, .5, .025, 0.062] // default difussion rates, feed, kill
+
+document.querySelector('#params').addEventListener('change', e => {
+    let id = e.target.id
+    if( id == 'dA' ) dA = +e.target.value;
+    if( id == 'dB' ) dB = +e.target.value;
+    if( id == 'feed' ) feed = +e.target.value;
+    if( id == 'kill' ) kill = +e.target.value;
+})
+
+document.querySelector('#play').addEventListener('click', e => {
+    running = !running;
+    if(running) nextFrame();
+});
+
+nextFrame();
