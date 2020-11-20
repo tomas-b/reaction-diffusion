@@ -29,5 +29,29 @@ const gridToU8Array = grid => {
 
 }
 
-let image = new ImageData( gridToU8Array(grid), width, height )
-ctx.putImageData( image, 0, 0 );
+const iterate = grid => {
+
+    let next = [];
+    for( let x = 0; x < width;  x++ ) {
+        next[x] = [];
+        for( let y = 0; y < height;  y++ ) {
+            next[x][y] = {
+                a: grid[x][y].a * 0.8,
+                b: grid[x][y].b * 0.95
+            }
+        }
+    }
+
+    return next
+}
+
+const nextFrame = grid => {
+    let next = iterate(grid);
+    let image = new ImageData( gridToU8Array(next), width, height )
+    ctx.putImageData( image, 0, 0 );
+    grid = next;
+    // requestAnimationFrame( nextFrame(next) );
+    setTimeout( () => nextFrame(next), 100 );
+}
+
+nextFrame(grid);
