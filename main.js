@@ -1,5 +1,5 @@
 const canvas = document.querySelector('canvas');
-const [width, height] = [500, 500]
+const [width, height] = [250, 250]
 
 canvas.width = width;
 canvas.height = height;
@@ -111,7 +111,7 @@ canvas.addEventListener('mousemove', e => {
 
 let [dA, dB, feed, kill] = [1, .5, .025, 0.062] // default difussion rates, feed, kill
 
-document.querySelector('#params').addEventListener('change', e => {
+document.querySelector('#params').addEventListener('input', e => {
     let id = e.target.id
     if( id == 'dA' ) dA = +e.target.value;
     if( id == 'dB' ) dB = +e.target.value;
@@ -123,5 +123,14 @@ document.querySelector('#play').addEventListener('click', e => {
     running = !running;
     if(running) nextFrame();
 });
+
+document.querySelector('#clear').addEventListener('click', e => {
+    grid = Array(width).fill().map(
+            () => Array(height).fill().map(
+                () => { return { a:1, b:0 } }
+            ))
+    nextFrame()
+});
+
 
 nextFrame();

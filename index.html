@@ -10,14 +10,15 @@
     <canvas></canvas>
 
     <div id='params'>
-    <input type='number' id='dA' min=-5 max=5 value=1 step='0.01'>
-    <input type='number' id='dB' min=-5 max=5 value=0.5 step='0.01'>
-    <input type='number' id='feed' min=-5 max=5 value=0.025 step='0.001'>
-    <input type='number' id='kill' min=0 max=.1 value=0.062 step='0.001'>
+        dA: <input type='range' id='dA' min=-5 max=5 value=1 step='0.01'> <br/>
+        dB: <input type='range' id='dB' min=-5 max=5 value=0.5 step='0.01'> <br/>
+        feed: <input type='range' id='feed' min=-5 max=5 value=0.025 step='0.001'> <br/>
+        kill: <input type='range' id='kill' min=0 max=.1 value=0.062 step='0.001'>
     </div>
 
     <div id='buttons'>
         <button id='play'> run/stop </button>
+        <button id='clear'> clear </button>
     </div>
 
     <script src="main.js"></script>
